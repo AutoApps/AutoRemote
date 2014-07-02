@@ -4,8 +4,8 @@ http://joaoapps.com/autoremote/what-it-is/
 
 ## AutoRemote API
 ### C-Sharp
-#### Library 
-You'll find demo implementations of the AutoRemote for C# in Plugin/
+#### Library / Implementation
+You'll find demo implementations of the AutoRemote-API for C# in Plugin/
 
 ### JavaScript / nodeJS
 #### Library - autoRemote.js
