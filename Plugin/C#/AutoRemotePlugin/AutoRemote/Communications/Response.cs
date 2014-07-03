@@ -11,5 +11,9 @@ namespace AutoRemotePlugin.AutoRemote.Communications
     {
         //If the request resulted in error, set the error here
         public String responseError { get; set; }
+        protected override string GetGCMEndpoint()
+        {
+            return "sendresponse";
+        }
     }
 }
