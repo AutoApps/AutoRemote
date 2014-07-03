@@ -38,94 +38,15 @@ namespace AutoRemotePlugin.AutoRemote.Communications
         {
             key = device.key;
             var url = "http://" + device.localip + ":" + device.port + "/";
-
             var dataString = JsonConvert.SerializeObject(this);
+
             var content = new StringContent(dataString);
 
-            //The content var will contain something like this:
-            //{
-            //    "id": "windows8joao",
-            //    "name": "Joao's Windows 8 Machine",
-            //    "type": "plugin",
-            //    "localip": "192.168.1.72",
-            //    "publicip": null,
-            //    "port": "1820",
-            //    "haswifi": true,
-            //    "additional": {
-            //        "iconUrl": "http://icons.iconarchive.com/icons/dakirby309/windows-8-metro/256/Folders-OS-Windows-8-Metro-icon.png",
-            //        "type": "Windows 8 Plugin by joaomgcd",
-            //        "canReceiveFiles": false
-            //    },
-            //    "ttl": 0,
-            //    "collapsekey": null,
-            //    "key": "YOUR_DEVICE_KEY",
-            //    "sender": "windows8joao",
-            //    "communication_base_params": {
-            //        "sender": "windows8joao",
-            //        "type": "RequestSendRegistration"
-            //    }
-            //}
+            var result = await httpClient.PostAsync(url, content);
 
-            
-
-            Debug.WriteLine("Sending through local ip");
-            //send this as json objecto to localip
-            Boolean success = await SendContent(url, content);
-
-            //if it fails
-            if (!success)
-            {
-                Debug.WriteLine("Couldn't send through local network. Sending through GCM");
-                url = "https://autoremotejoaomgcd.appspot.com/" + GetGCMEndpoint();
-
-                //To send trhough GCM we need to send the request as a form encoded content and add the key and sender parameters
-                var postData = new List<KeyValuePair<string, string>> { 
-                    new KeyValuePair<string, string>("request", dataString) ,
-                    new KeyValuePair<string, string>("key", key) ,
-                    new KeyValuePair<string, string>("sender", sender) ,
-                };
-
-                var contentGCM = new FormUrlEncodedContent(postData);
-                success = await SendContent(url, contentGCM);
-                if (success)
-                {
-                    Debug.WriteLine("Sent through GCM");
-                }
-                else
-                {
-                    Debug.WriteLine("Couldn't send");
-                }
-            }
-            else
-            {
-                Debug.WriteLine("Sent through local ip");
-            }
-
+            Debug.WriteLine(result.StatusCode);
         }
 
-       /// <summary>
-       /// Sends some content to a certain URL via HTTP POST
-       /// </summary>
-       /// <param name="url">Url to send to</param>
-       /// <param name="content">Content to send</param>
-       /// <returns>true if successful, false if not</returns>
-        private async Task<Boolean> SendContent(String url, HttpContent content)
-        {
-            try
-            {
-                var result = await httpClient.PostAsync(url, content);
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-
-        }
-        protected virtual String GetGCMEndpoint()
-        {
-            return null;
-        }
         public static AutoRemote.Communications.Request GetRequestFromJson(string json)
         {
             var comm = JsonConvert.DeserializeObject<Communication>(json);
