@@ -20,5 +20,10 @@ namespace AutoRemotePlugin.AutoRemote.Communications
         {
             return new ResponseNoAction();
         }
+
+        protected override string GetGCMEndpoint()
+        {
+            return "sendrequest";
+        }
     }
 }
